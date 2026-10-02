@@ -39,6 +39,19 @@ function wheelSet(b: GeoBuilder, pts: [number, number, number][], r: number, w: 
   for (const [x, y, z] of pts) b.wheel(x, y, z, r, w);
 }
 
+const HAIR = [0x16110d, 0x1d1712, 0x261c14, 0x16110d, 0x3b3530, 0xbdbab5];
+
+/**
+ * Head with natural hair: the hair volume sits slightly up and back so it
+ * wraps the crown, sides and nape while the face (front, -Z) stays visible.
+ * Faces -Z like every model. d = head diameter.
+ */
+function head(b: GeoBuilder, x: number, y: number, z: number, d: number, skin: number, hair = rnd(HAIR)) {
+  b.sphere(x, y, z, d, d * 1.1, d, skin);
+  b.sphere(x, y + d * 0.14, z + d * 0.09, d * 1.12, d * 0.98, d * 1.08, hair); // crown + sides
+  b.sphere(x, y - d * 0.1, z + d * 0.2, d * 0.98, d * 0.8, d * 0.78, hair); // back of the head / nape
+}
+
 // ---------------------------------------------------------------- cars
 function buildCar(body: number, taxi = false): THREE.BufferGeometry {
   const b = new GeoBuilder();
@@ -103,7 +116,7 @@ function buildCNG(body: number, trim: number): THREE.BufferGeometry {
   b.box(0, 1.35, -0.58, 1.3, 0.8, 0.05, 0xa8cfdc);
   b.box(0, 0.95, 0.6, 1.1, 0.2, 0.75, 0x3a2a20);
   b.box(0, 1.2, 1.12, 1.1, 0.5, 0.1, 0x3a2a20);
-  b.sphere(0, 1.45, -0.15, 0.26, 0.28, 0.26, rnd(SKIN));
+  head(b, 0, 1.45, -0.15, 0.26, rnd(SKIN));
   b.box(0, 1.1, -0.15, 0.4, 0.5, 0.25, rnd(SHIRTS));
   b.box(0, 0.88, -1.27, 0.26, 0.2, 0.05, HEADLIGHT);
   b.box(-0.55, 0.72, 1.22, 0.2, 0.14, 0.05, TAILLIGHT);
@@ -127,7 +140,7 @@ function buildRickshaw(hood: number, accent: number, panel: number): THREE.Buffe
   for (const sx of [-0.46, 0.46]) b.box(sx, 1.3, 0.5, 0.04, 0.6, 0.04, 0x333333);
   b.box(0, 0.98, 1.02, 0.92, 0.7, 0.06, panel);
   b.box(0, 0.98, 1.06, 0.52, 0.38, 0.02, accent);
-  b.sphere(0, 1.62, -0.32, 0.27, 0.3, 0.27, rnd(SKIN));
+  head(b, 0, 1.62, -0.32, 0.27, rnd(SKIN));
   b.box(0, 1.2, -0.32, 0.4, 0.55, 0.25, rnd(SHIRTS));
   b.box(-0.12, 0.78, -0.3, 0.13, 0.5, 0.15, rnd(LUNGI));
   b.box(0.12, 0.78, -0.3, 0.13, 0.5, 0.15, rnd(LUNGI));
@@ -153,13 +166,13 @@ function buildBattery(roof: number, curtain: number, chassis: number): THREE.Buf
   b.box(0, 1.5, -0.68, 1.3, 0.75, 0.05, 0xa8cfdc);
   b.box(0, 0.95, 0.75, 1.2, 0.22, 0.9, 0x3d3d46);
   b.box(0, 1.3, 1.34, 1.2, 0.5, 0.1, 0x3d3d46);
-  b.sphere(0, 1.55, -0.95, 0.26, 0.28, 0.26, rnd(SKIN));
+  head(b, 0, 1.55, -0.95, 0.26, rnd(SKIN));
   b.box(0, 1.2, -0.95, 0.4, 0.5, 0.25, rnd(SHIRTS));
   b.box(0, 0.98, -1.5, 0.3, 0.2, 0.05, HEADLIGHT);
   b.box(-0.6, 0.7, 1.46, 0.22, 0.14, 0.05, TAILLIGHT);
   b.box(0.6, 0.7, 1.46, 0.22, 0.14, 0.05, TAILLIGHT);
-  b.sphere(-0.25, 1.48, 0.75, 0.24, 0.26, 0.24, rnd(SKIN));
-  b.sphere(0.25, 1.48, 0.75, 0.24, 0.26, 0.24, rnd(SKIN));
+  head(b, -0.25, 1.48, 0.75, 0.24, rnd(SKIN));
+  head(b, 0.25, 1.48, 0.75, 0.24, rnd(SKIN));
   return b.build();
 }
 
@@ -184,8 +197,7 @@ function buildMotorcycle(bike: number, shirt: number, helmet: number | null): TH
     b.sphere(0, 1.78, 0.18, 0.4, 0.38, 0.42, helmet);
     b.box(0, 1.74, 0.0, 0.3, 0.12, 0.04, 0x222222);
   } else {
-    b.sphere(0, 1.76, 0.18, 0.28, 0.3, 0.28, rnd(SKIN));
-    b.sphere(0, 1.88, 0.2, 0.3, 0.16, 0.3, 0x141414);
+    head(b, 0, 1.76, 0.18, 0.28, rnd(SKIN));
   }
   return b.build();
 }
@@ -257,13 +269,14 @@ export function buildPerson(l: PedLook): THREE.BufferGeometry {
   }
   b.box(-0.3 * k, 1.2 * k, 0, 0.12 * k, 0.55 * k, 0.14 * k, l.shirt);
   b.box(0.3 * k, 1.2 * k, 0, 0.12 * k, 0.55 * k, 0.14 * k, l.shirt);
-  b.sphere(0, 1.68 * k, 0, 0.27 * k, 0.3 * k, 0.27 * k, l.type === 'burqa' ? l.shirt : l.skin);
+  const covered = l.type === 'woman' || l.type === 'burqa' || l.type === 'police';
+  if (covered) b.sphere(0, 1.68 * k, 0, 0.27 * k, 0.3 * k, 0.27 * k, l.type === 'burqa' ? l.shirt : l.skin);
+  else head(b, 0, 1.68 * k, 0, 0.27 * k, l.skin, l.extra === 0xffffff ? rnd(HAIR) : l.extra);
   if (l.type === 'woman' || l.type === 'burqa') b.sphere(0, 1.7 * k, 0.03 * k, 0.33 * k, 0.34 * k, 0.32 * k, l.extra);
   else if (l.type === 'police') {
     b.cyl(0, 1.84 * k, 0, 0.17 * k, 0.12 * k, 0x1f2a44);
     b.box(0, 1.77 * k, -0.14 * k, 0.3 * k, 0.03, 0.14 * k, 0x1f2a44);
   } else if (l.type === 'man' && l.extra === 0xffffff) b.cyl(0, 1.86 * k, 0, 0.14 * k, 0.1 * k, 0xffffff); // topi
-  else b.sphere(0, 1.78 * k, 0.02 * k, 0.28 * k, 0.16 * k, 0.28 * k, l.extra);
   if (l.type === 'police') b.box(0, 1.25 * k, -0.14 * k, 0.5 * k, 0.06, 0.02, 0xc9b458);
   return b.build();
 }
@@ -311,12 +324,12 @@ class AssetManager {
             shirt: type === 'woman' ? rp(SAREE, i) : rp(SHIRTS, i * 3),
             pants: rp(PANTS, i),
             skin: rp(SKIN, i * 2),
-            extra: type === 'woman' ? rp(SAREE, i + 2) : topi ? 0xffffff : 0x1a1410,
+            extra: type === 'woman' ? rp(SAREE, i + 2) : topi ? 0xffffff : rp(HAIR, i),
           }),
         );
       }
       for (let i = 0; i < 4; i++)
-        list.push(buildPerson({ type: 'vendor', shirt: rp(SHIRTS, i + 5), pants: 0x333333, skin: rp(SKIN, i), extra: 0x1a1410 }));
+        list.push(buildPerson({ type: 'vendor', shirt: rp(SHIRTS, i + 5), pants: 0x333333, skin: rp(SKIN, i), extra: rp(HAIR, i + 2) }));
       this.peds = list;
     }
     return this.peds;
