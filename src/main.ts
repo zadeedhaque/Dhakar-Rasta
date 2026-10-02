@@ -24,4 +24,13 @@ async function boot(): Promise<void> {
   new Game(document.getElementById('game-canvas') as HTMLCanvasElement, document.getElementById('ui-root')!);
 }
 
+// It is a game: block browser double-tap / pinch zoom (iOS ignores user-scalable=no).
+for (const ev of ['gesturestart', 'gesturechange', 'dblclick']) document.addEventListener(ev, (e) => e.preventDefault(), { passive: false });
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTouchEnd < 350) e.preventDefault();
+  lastTouchEnd = now;
+}, { passive: false });
+
 void boot();

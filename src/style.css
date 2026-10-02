@@ -12,7 +12,8 @@
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; overflow: hidden; background: #c9d4d6; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #c9d4d6; touch-action: none; overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+#ui-root button, #ui-root input { touch-action: manipulation; }
 body { font-family: var(--bn); color: var(--text); -webkit-font-smoothing: antialiased; user-select: none; }
 #app { position: fixed; inset: 0; }
 #game-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
