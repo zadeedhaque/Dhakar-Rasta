@@ -17,7 +17,6 @@ export class MainMenu extends Screen {
     const wrap = h('div', 'title-wrap', undefined, this.root);
     h('h1', 'title', T.title, wrap);
     h('p', 'subtitle', T.subtitle, wrap);
-    h('p', 'roman', T.subtitleRoman, wrap);
     h('div', 'rickshaw-art', undefined, wrap);
     const col = h('div', 'btn-col', undefined, wrap);
     col.style.maxWidth = '320px';
@@ -26,7 +25,7 @@ export class MainMenu extends Screen {
     btn(T.menu.best, a.best, 'btn', col);
     btn(T.menu.settings, a.settings, 'btn', col);
     btn(T.menu.exit, a.exit, 'btn', col);
-    this.foot = h('div', 'menu-foot', T.howTo.tips[3], wrap);
+    this.foot = h('div', 'menu-foot', '', wrap); // only used for the exit message
   }
   showMessage(text: string): void {
     this.foot.textContent = text;
