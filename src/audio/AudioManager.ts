@@ -18,6 +18,7 @@ export class AudioManager {
   private crowd: GainNode | null = null;
   private nextAmbient = 1;
   private volumes = { sound: 0.8, sfx: 0.9 };
+  private hornStamps: number[] = [];
 
   /** Must be called from a user gesture (browser autoplay policy). */
   init(): void {
@@ -231,6 +232,45 @@ export class AudioManager {
   bell(dx: number, dist: number): void {
     if (this.ctx) this.bellRaw(clamp(dx / 8, -1, 1), dist * 0.6, this.sfx);
   }
+  /**
+   * Horn of an AI vehicle. Timbre depends on the vehicle (deep air horn for
+   * buses/trucks, beep for cars, shrill pip for CNG/battery/bikes) with a
+   * per-vehicle pitch offset; globally capped so jams stay listenable.
+   */
+  vehicleHorn(kind: string, dx: number, dist: number, seed: number): void {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    this.hornStamps = this.hornStamps.filter((t) => now - t < 1);
+    if (this.hornStamps.length >= 5) return;
+    this.hornStamps.push(now);
+    const pan = clamp(dx / 8, -1, 1);
+    const g = 0.11 * this.att(dist);
+    const detune = 1 + ((seed * 37) % 13) / 100 - 0.06;
+    const beeps = 1 + (seed % 3 === 0 ? 1 : 0) + (Math.random() < 0.25 ? 1 : 0);
+    let f1: number, f2: number, len: number, type: OscillatorType;
+    switch (kind) {
+      case 'bus':
+      case 'truck':
+        [f1, f2, len, type] = [196, 247, 0.55, 'sawtooth'];
+        break;
+      case 'cng':
+      case 'battery':
+        [f1, f2, len, type] = [660, 830, 0.12, 'square'];
+        break;
+      case 'motorcycle':
+        [f1, f2, len, type] = [560, 700, 0.14, 'square'];
+        break;
+      default:
+        [f1, f2, len, type] = [415, 523, 0.24, 'square'];
+    }
+    for (let i = 0; i < beeps; i++) {
+      const delay = i * (len + 0.08);
+      this.tone(f1 * detune, len, type, g, { pan, delay, attack: 0.008 });
+      this.tone(f2 * detune, len, type, g * 0.7, { pan, delay, attack: 0.008 });
+    }
+  }
+
   /** Short "pip-pip" of a battery rickshaw / motorbike. */
   horn2(dx: number, dist: number): void {
     if (!this.ctx) return;

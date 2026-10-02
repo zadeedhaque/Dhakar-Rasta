@@ -205,12 +205,15 @@ export class TrafficManager {
 
   private drive(v: TrafficVehicle, dt: number): void {
     let target = v.desired;
+    v.hornT -= dt;
     if (!v.ignoreLeader) {
       const lead = this.findLeader(v);
       if (lead) {
         const safe = MIN_GAP + v.speed * 0.5;
         if (lead.gap < safe * 3) target = Math.min(target, Math.max(0, lead.speedAlong) + (lead.gap - safe) * 0.8);
         if (lead.gap < 0.6) target = 0;
+        // blocked by something slower or standing in the way -> honk (Dhaka rules)
+        if (v.desired > 1 && lead.gap < safe * 2 + 4 && lead.speedAlong < v.desired - 1.5) this.honk(v, lead.isPlayer);
       }
     }
     target = Math.max(0, target);
@@ -220,6 +223,17 @@ export class TrafficManager {
     v.vx = clamp((v.targetX - v.x) * 2.2, -v.latSpeed, v.latSpeed) * (moving ? 1 : 0.25);
     v.x += v.vx * dt;
     v.s += v.vs * dt;
+  }
+
+  /** Vehicle horn / rickshaw bell, rate-limited per vehicle; only audible near the player. */
+  private honk(v: TrafficVehicle, atPlayer: boolean): void {
+    if (v.hornT > 0) return;
+    v.hornT = (atPlayer ? 0.9 : 1.6) + Math.random() * 2.4;
+    const w = this.world;
+    const d = Math.abs(v.s - w.focusS);
+    if (d > 110) return;
+    if (v.kind === 'rickshaw') w.audio.bell(v.x - w.focusX, d);
+    else w.audio.vehicleHorn(v.kind, v.x - w.focusX, d, v.id);
   }
 
   private syncMesh(v: TrafficVehicle, dt: number): void {
