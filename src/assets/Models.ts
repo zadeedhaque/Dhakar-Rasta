@@ -27,8 +27,8 @@ const HEADLIGHT = 0xfff1b5;
 const TAILLIGHT = 0xe52222;
 const RICK_COLORS = [0xd7263d, 0x1b6ca8, 0x2e933c, 0xf2b705, 0xe86a92, 0xff7f11, 0x7d3cff];
 const SKIN = [0xc68642, 0xa9743b, 0x8d5524, 0xd9a066, 0x6f4518];
-const SHIRTS = [0xd94f3d, 0x3b7dd8, 0x3aa56a, 0xf0c33c, 0xffffff, 0x8e44ad, 0xe67e22, 0x2c3e50, 0xe8d9b5, 0x16a085, 0xc0392b];
-const PANTS = [0x222b38, 0x3d4a5c, 0x5a4636, 0x1c1c1c, 0x2f4f4f];
+const SHIRTS = [0xd94f3d, 0x3b7dd8, 0x3aa56a, 0xf0c33c, 0xffffff, 0x8e44ad, 0xe67e22, 0x5dade2, 0xe8d9b5, 0x16a085, 0xc0392b];
+const PANTS = [0x4a5d78, 0x5b6b80, 0x7a6248, 0x8a7a5c, 0x4f7a6a];
 const LUNGI = [0x2e6f9e, 0x7a3b3b, 0x3d7a4f, 0x6b5b95];
 const SAREE = [0xd62839, 0x1f7a8c, 0xf4a259, 0x6a4c93, 0x2a9d8f, 0xe76f51, 0x3a86ff];
 
@@ -303,15 +303,15 @@ class AssetManager {
       const list: THREE.BufferGeometry[] = [];
       for (let i = 0; i < 18; i++) {
         const r = i % 6;
-        const type: PedLook['type'] = r === 3 ? 'woman' : r === 4 ? 'child' : r === 5 && i > 10 ? 'burqa' : 'man';
+        const type: PedLook['type'] = r === 3 ? 'woman' : r === 4 ? 'child' : r === 5 && i > 10 ? 'woman' : 'man';
         const topi = i % 4 === 0;
         list.push(
           buildPerson({
             type,
-            shirt: type === 'woman' ? rp(SAREE, i) : type === 'burqa' ? 0x1b1b22 : rp(SHIRTS, i * 3),
+            shirt: type === 'woman' ? rp(SAREE, i) : rp(SHIRTS, i * 3),
             pants: rp(PANTS, i),
             skin: rp(SKIN, i * 2),
-            extra: type === 'woman' ? rp(SAREE, i + 2) : type === 'burqa' ? 0x1b1b22 : topi ? 0xffffff : 0x1a1410,
+            extra: type === 'woman' ? rp(SAREE, i + 2) : topi ? 0xffffff : 0x1a1410,
           }),
         );
       }

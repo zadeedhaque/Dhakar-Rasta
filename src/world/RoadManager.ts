@@ -80,7 +80,7 @@ export class RoadManager {
       switch (t) {
         case 'NORMAL_ROAD': return 2.6;
         case 'COMMERCIAL': return 1.4;
-        case 'MARKET': return 1.5 * d.marketFrequency;
+        case 'MARKET': return 2.8 * d.marketFrequency;
         case 'FOOTBRIDGE': return 1.2;
         case 'BUS_STOP': return 1.1;
         case 'CONSTRUCTION': return 0.8;

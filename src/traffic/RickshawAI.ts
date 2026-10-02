@@ -2,18 +2,33 @@ import type { BehaviourFn } from './VehicleAI';
 import type { TrafficVehicle } from './TrafficVehicle';
 import type { World } from '../game/World';
 import { laneDiscipline } from './VehicleAI';
-import { clamp } from '../utils/math';
+import { clamp, lerp } from '../utils/math';
 
 /** Shared by pedal rickshaws: suddenly stopping, pulling to the kerb, going the wrong way. */
-export function wrongWayDrive(v: TrafficVehicle, world: World, dt: number): void {
+/**
+ * Oncoming rickshaws deliberately steer toward the player's lane... but only
+ * until the reaction window: inside it they commit to a straight line so a
+ * late swerve by the player always works (fairness).
+ */
+export function homeOnPlayer(v: TrafficVehicle, world: World, range: number): void {
+  if (world.demo || v.state === 'CHANGING_LANE') return;
+  const ahead = v.s - world.focusS;
+  const timeToMeet = ahead / Math.max(1, world.playerSpeed + v.speed);
+  if (ahead <= 0 || timeToMeet < world.difficulty.current.reactionWindow * 0.6) return;
+  const want = lerp(v.laneX, world.player.x, 0.85);
+  v.targetX = clamp(clamp(want, v.laneX - range, v.laneX + range), -6.1, 6.1);
+}
+
+export function wrongWayDrive(v: TrafficVehicle, world: World, dt: number, homing = 3.5): void {
   v.desired = v.cruise;
+  homeOnPlayer(v, world, homing);
   laneDiscipline(v, world, dt, 0.5);
   if (v.state !== 'CHANGING_LANE') v.setState('WRONG_WAY');
   // ring the bell as it nears the player
-  v.scratch -= dt;
+  v.bellT -= dt;
   const d = v.s - world.focusS;
-  if (d > 0 && d < 60 && v.scratch <= 0) {
-    v.scratch = 1.6 + Math.random();
+  if (d > 0 && d < 60 && v.bellT <= 0) {
+    v.bellT = 1.6 + Math.random();
     world.audio.bell(v.x - world.focusX, d);
   }
 }

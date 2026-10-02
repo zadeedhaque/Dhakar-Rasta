@@ -2,7 +2,7 @@ import type { BehaviourFn } from './VehicleAI';
 import { laneDiscipline } from './VehicleAI';
 import { wrongWayDrive } from './RickshawAI';
 import { chooseHazardLane, hazardBudgetOk, reactionDistance } from '../events/Fairness';
-import { clamp, lerp } from '../utils/math';
+import { lerp } from '../utils/math';
 import { T } from '../i18n/bn';
 
 const TURN_TIME = 0.8;
@@ -28,7 +28,6 @@ export const BatteryRickshawAI: BehaviourFn = (v, world, dt) => {
     laneDiscipline(v, world, dt, 1.4);
     return;
   }
-  const rw = world.difficulty.current.reactionWindow;
   switch (v.state) {
     case 'WAITING': {
       v.desired = 0;
@@ -41,7 +40,7 @@ export const BatteryRickshawAI: BehaviourFn = (v, world, dt) => {
         const lane = chooseHazardLane(world, v.s, v.cruise, v.halfW, 0.55);
         if (lane === null || !hazardBudgetOk(world)) return; // no fair moment yet; keep waiting
         v.targetX = lane;
-        v.scratch = lane; // remember the committed lane
+        v.laneX = lane; // remember the committed lane
         v.hazardKey = 'wrongWayBattery';
         v.warnText = T.warn.wrongWay;
         v.ignoreLeader = true;
@@ -64,16 +63,8 @@ export const BatteryRickshawAI: BehaviourFn = (v, world, dt) => {
     }
     case 'WRONG_WAY':
     case 'CHANGING_LANE': {
-      v.desired = v.cruise;
-      const p = world.player;
-      const timeToMeet = (v.s - world.focusS) / Math.max(1, world.playerSpeed + v.speed);
-      if (timeToMeet > rw * 0.6 && v.state === 'WRONG_WAY') {
-        // drift toward the player's lane, limited to one lane from the committed lane
-        const lane = v.scratch;
-        v.targetX = clamp(lerp(lane, world.demo ? lane : p.x, 0.6), lane - 1.75, lane + 1.75);
-        v.targetX = clamp(v.targetX, -6.1, 6.1);
-      }
-      wrongWayDrive(v, world, dt);
+      // homes in on the player (one lane either way), then commits inside the reaction window
+      wrongWayDrive(v, world, dt, 1.75);
       if (v.s < world.focusS - 6) v.setState('RECOVERING');
       break;
     }

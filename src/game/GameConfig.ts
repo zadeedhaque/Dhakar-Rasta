@@ -78,7 +78,7 @@ export const CFG = {
     spawnCooldown: 0.35,
     followMinGap: 2.2,
     laneChangeSpeed: 3.2,
-    kindWeights: { car: 30, cng: 18, rickshaw: 22, battery: 9, motorcycle: 15, bus: 8, truck: 3 } as Record<string, number>,
+    kindWeights: { car: 26, cng: 16, rickshaw: 22, battery: 9, motorcycle: 14, bus: 18, truck: 3 } as Record<string, number>,
   },
   pedestrians: {
     maxActive: 70,
@@ -91,15 +91,15 @@ export const CFG = {
   difficulty: {
     // linear interpolation between tiers by distance. Edit freely.
     tiers: [
-      { d: 0,    name: 'সহজ',       trafficDensity: 11, pedestrianDensity: 0.7, wrongWayFrequency: 1.0, busEventFrequency: 0.2, motorcycleAggression: 0.15, reactionWindow: 3.2, marketFrequency: 0.5, maxHazards: 1, eventInterval: 9,   speedFactor: 0.9 },
-      { d: 500,  name: 'মাঝারি',    trafficDensity: 16, pedestrianDensity: 1.0, wrongWayFrequency: 1.8, busEventFrequency: 0.5, motorcycleAggression: 0.35, reactionWindow: 2.8, marketFrequency: 0.8, maxHazards: 2, eventInterval: 6.5, speedFactor: 1.0 },
-      { d: 1500, name: 'কঠিন',      trafficDensity: 22, pedestrianDensity: 1.5, wrongWayFrequency: 2.6, busEventFrequency: 0.8, motorcycleAggression: 0.6,  reactionWindow: 2.4, marketFrequency: 1.1, maxHazards: 3, eventInterval: 4.5, speedFactor: 1.08 },
-      { d: 3000, name: 'অতি কঠিন',  trafficDensity: 28, pedestrianDensity: 2.0, wrongWayFrequency: 3.6, busEventFrequency: 1.1, motorcycleAggression: 0.85, reactionWindow: 2.1, marketFrequency: 1.4, maxHazards: 4, eventInterval: 3.2, speedFactor: 1.15 },
+      { d: 0,    name: 'সহজ',       trafficDensity: 11, pedestrianDensity: 0.7, wrongWayFrequency: 1.0, busEventFrequency: 0.2, motorcycleAggression: 0.15, reactionWindow: 3.2, marketFrequency: 0.5, maxHazards: 2, eventInterval: 7,   speedFactor: 0.9 },
+      { d: 500,  name: 'মাঝারি',    trafficDensity: 16, pedestrianDensity: 1.0, wrongWayFrequency: 1.8, busEventFrequency: 0.5, motorcycleAggression: 0.35, reactionWindow: 2.8, marketFrequency: 0.8, maxHazards: 3, eventInterval: 5, speedFactor: 1.0 },
+      { d: 1500, name: 'কঠিন',      trafficDensity: 22, pedestrianDensity: 1.5, wrongWayFrequency: 2.6, busEventFrequency: 0.8, motorcycleAggression: 0.6,  reactionWindow: 2.4, marketFrequency: 1.1, maxHazards: 4, eventInterval: 3.6, speedFactor: 1.08 },
+      { d: 3000, name: 'অতি কঠিন',  trafficDensity: 28, pedestrianDensity: 2.0, wrongWayFrequency: 3.6, busEventFrequency: 1.1, motorcycleAggression: 0.85, reactionWindow: 2.1, marketFrequency: 1.4, maxHazards: 5, eventInterval: 2.6, speedFactor: 1.15 },
     ],
   },
   events: {
     minGapBetweenEvents: 2.4,
-    busJamMinDistance: 300,
+    busJamMinDistance: 150,
     batteryMinDistance: 150,
     motoCrashMinDistance: 500,
     suddenEntryMinDistance: 350,

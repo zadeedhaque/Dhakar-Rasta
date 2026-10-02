@@ -38,7 +38,7 @@ export function buildMarket(ctx: DecorCtx) {
       addCollider(seg, 'stall', x, s, 0.85, 1.3);
     }
     seg.pedSpawns.push({ behavior: 'STANDING', s: s + 1.6, x: side * (W.roadHalfWidth + 0.2), vendor: true, faceRoad: true });
-    s += rand(13, 22);
+    s += rand(7, 12);
   }
   for (let i = 0; i < randInt(10, 15); i++) {
     const side = chance(0.5) ? -1 : 1;

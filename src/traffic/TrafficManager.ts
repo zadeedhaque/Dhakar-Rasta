@@ -81,7 +81,7 @@ export class TrafficManager {
     const sf = this.world.difficulty.current.speedFactor;
     const [a, b] = SPEED[kind];
     v.s = o.s;
-    v.x = v.targetX = o.x;
+    v.x = v.targetX = v.laneX = o.x;
     v.dir = o.dir ?? 1;
     v.cruise = v.desired = o.desired ?? rand(a, b) * sf;
     v.speed = o.speed ?? v.cruise * 0.9;

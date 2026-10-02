@@ -1,5 +1,6 @@
 import { DecorCtx, buildRoadBase, buildBuildingRow, buildPolesAndWires, buildBackdrop } from '../Decor';
-import { footpathProps, footpathWalkers } from './common';
+import { addCollider, footpathProps, footpathWalkers } from './common';
+import { foodCart } from '../Decor';
 import { chance, pick, rand, randInt } from '../../utils/math';
 import { CFG } from '../../game/GameConfig';
 import type { VehicleKind } from '../../assets/Models';
@@ -16,6 +17,15 @@ export function buildNormal(ctx: DecorCtx, commercial: boolean) {
   buildBackdrop(ctx);
   footpathProps(ctx, commercial ? 4 : 2, commercial ? 1 : randInt(1, 4));
   footpathWalkers(ctx.seg, commercial ? 9 : 5);
+  // street carts parked on the road edge (outer ~1.6 m only, inner lanes stay open)
+  for (let i = 0; i < randInt(1, 3); i++) {
+    const side = chance(0.5) ? -1 : 1;
+    const s = ctx.seg.s0 + rand(8, ctx.seg.length - 8);
+    const x = side * (CFG.world.roadHalfWidth - 0.85);
+    foodCart(ctx.b, x, s);
+    addCollider(ctx.seg, 'stall', x, s, 0.7, 1.05);
+    ctx.seg.pedSpawns.push({ behavior: 'STANDING', s: s + 1.6, x: side * (CFG.world.roadHalfWidth + 0.2), vendor: true, faceRoad: true });
+  }
 }
 
 /**

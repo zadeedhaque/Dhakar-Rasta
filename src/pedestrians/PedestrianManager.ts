@@ -166,7 +166,7 @@ export class PedestrianManager {
   countHazards(): number {
     const f = this.world.focusS;
     let n = 0;
-    for (const p of this.active) if (p.hazardKey && !p.passed && p.s > f) n++;
+    for (const p of this.active) if (p.state === 'CROSSING' && !p.passed && p.s > f && p.s < f + 120) n++; // shoppers milling at the kerb don't use up the budget
     return n;
   }
 }

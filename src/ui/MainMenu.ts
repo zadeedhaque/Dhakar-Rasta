@@ -17,7 +17,6 @@ export class MainMenu extends Screen {
     const wrap = h('div', 'title-wrap', undefined, this.root);
     h('h1', 'title', T.title, wrap);
     h('p', 'subtitle', T.subtitle, wrap);
-    h('div', 'rickshaw-art', undefined, wrap);
     const col = h('div', 'btn-col', undefined, wrap);
     col.style.maxWidth = '320px';
     btn(T.menu.start, a.start, 'btn primary', col);

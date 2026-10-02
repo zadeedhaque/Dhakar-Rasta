@@ -52,7 +52,8 @@ export class World {
   }
 
   activeHazards(): number {
-    return this.traffic.countHazards() + this.peds.countHazards();
+    // crossings take ~10 s each, so three crossers weigh as one hazard in the budget
+    return this.traffic.countHazards() + Math.floor(this.peds.countHazards() / 3);
   }
 
   /** Wipe and rebuild the world from s = 0. */

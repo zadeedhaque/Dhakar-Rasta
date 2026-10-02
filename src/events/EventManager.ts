@@ -42,12 +42,12 @@ export class EventManager {
   private sinceLast = 0;
   private defs: EventDef[] = [
     {
-      id: 'WRONG_WAY_RICKSHAW', minDistance: 60, cooldown: 7,
-      weight: (w) => w.difficulty.current.wrongWayFrequency * 0.6,
+      id: 'WRONG_WAY_RICKSHAW', minDistance: 40, cooldown: 3.5,
+      weight: (w) => w.difficulty.current.wrongWayFrequency * 1.6,
       trigger: (w) => {
         const approach = rand(3, 4.5);
         const s = w.focusS + clamp(reactionDistance(w, approach) + rand(0, 25), 60, 205);
-        const lane = chooseHazardLane(w, s, approach, 0.55, 0.45);
+        const lane = chooseHazardLane(w, s, approach, 0.55, 0.7);
         if (lane === null) return false;
         return !!w.traffic.spawn('rickshaw', {
           s, x: lane + rand(-0.4, 0.4), dir: -1, desired: approach, speed: approach,
@@ -70,8 +70,8 @@ export class EventManager {
       },
     },
     {
-      id: 'BUS_JAM', minDistance: CFG.events.busJamMinDistance, cooldown: 30,
-      weight: (w) => (this.busJam ? 0 : w.difficulty.current.busEventFrequency * 1.6),
+      id: 'BUS_JAM', minDistance: CFG.events.busJamMinDistance, cooldown: 16,
+      weight: (w) => (this.busJam ? 0 : 0.6 + w.difficulty.current.busEventFrequency * 2.2),
       trigger: (w) => {
         this.busJam = BusJamEvent.tryStart(w);
         return !!this.busJam;

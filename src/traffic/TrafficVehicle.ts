@@ -70,6 +70,8 @@ export class TrafficVehicle implements Trackable {
   roll = 0;
   bob = 0;
   scratch = 0;
+  laneX = 0; // committed lane for oncoming hazards that home in on the player
+  bellT = 0;
 
   // Trackable (player interaction bookkeeping)
   passed = false;
@@ -105,6 +107,7 @@ export class TrafficVehicle implements Trackable {
     this.yawExtra = this.roll = 0;
     this.bob = Math.random() * 10;
     this.scratch = 0;
+    this.bellT = 0;
     this.passed = this.collided = false;
     this.minGap = Infinity;
     this.prevDs = null;

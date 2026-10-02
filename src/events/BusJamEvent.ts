@@ -29,6 +29,8 @@ export class BusJamEvent {
     const s = world.focusS + clamp(reactionDistance(world, 0) + rand(45, 70), 100, 205);
     const seg = world.road.segmentAt(s);
     if (!seg || seg.narrow || seg.type === 'JAM') return null;
+    // don't park the bus on top of road-edge carts
+    if (world.road.collidersIn(s - 14, s + 14, []).some((c) => c.x * side > 2)) return null;
     // escape route: at least one lane on the far side must be open around the bus
     const far = LANES.filter((x) => x * side < 0);
     if (!far.some((x) => world.traffic.isClearOfSlow(x, 1.2, s - 25, s + 20))) return null;
