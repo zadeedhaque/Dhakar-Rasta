@@ -5,6 +5,10 @@ without a serious accident: wrong-way rickshaws, battery rickshaws, buses that s
 anywhere, helmetless bikers on the footpath, and pedestrians crossing under a
 perfectly good foot-overbridge. All in-game text is Bangla.
 
+## Play
+
+https://dhakar-rasta.vercel.app
+
 ## Run
 
 ```

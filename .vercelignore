@@ -1,0 +1,4 @@
+brag-output*/
+dist
+node_modules
+.claude
