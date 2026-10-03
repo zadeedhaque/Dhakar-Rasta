@@ -25,6 +25,7 @@ export class MainMenu extends Screen {
     btn(T.menu.settings, a.settings, 'btn', col);
     btn(T.menu.exit, a.exit, 'btn', col);
     this.foot = h('div', 'menu-foot', '', wrap); // only used for the exit message
+    h('div', 'menu-credit', 'Made By Zadeed Haque', wrap);
   }
   showMessage(text: string): void {
     this.foot.textContent = text;
