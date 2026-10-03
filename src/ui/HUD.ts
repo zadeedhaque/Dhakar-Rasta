@@ -36,17 +36,21 @@ export class HUD {
     this.root = h('div', 'hidden', undefined, parent);
     this.root.id = 'hud';
     this.vignette = h('div', 'vignette', undefined, this.root);
-    const box = (id: string, label: string) => {
-      const b = h('div', 'hud-box', undefined, this.root);
+    const box = (id: string, label: string, parent: HTMLElement = this.root) => {
+      const b = h('div', 'hud-box', undefined, parent);
       b.id = id;
       h('div', 'hud-label', label, b);
       return { b, v: h('div', 'hud-value', '', b) };
     };
-    this.dist = box('hud-dist', T.hud.distance).v;
-    const m = box('hud-money', T.hud.money);
+    // Distance, score and money share one row: separate cards on desktop,
+    // a single panel with three columns on phones (see #hud-stats in style.css).
+    const stats = h('div', '', undefined, this.root);
+    stats.id = 'hud-stats';
+    this.dist = box('hud-dist', T.hud.distance, stats).v;
+    this.score = box('hud-score', T.hud.score, stats).v;
+    const m = box('hud-money', T.hud.money, stats);
     this.money = m.v;
     this.moneyBox = m.b;
-    this.score = box('hud-score', T.hud.score).v;
     const sp = box('hud-speed', T.hud.speed + ' (' + T.hud.kmh + ')');
     this.speed = sp.v;
     this.bar = h('div', '', undefined, h('div', 'speed-bar', undefined, sp.b));

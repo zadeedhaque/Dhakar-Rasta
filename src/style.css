@@ -76,12 +76,18 @@ body { font-family: var(--bn); color: var(--text); -webkit-font-smoothing: antia
 }
 .hud-label { font-size: 13px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
 .hud-value { font-size: 28px; font-weight: 700; line-height: 1.15; }
-#hud-dist { top: 16px; left: 16px; min-width: 150px; }
-#hud-money { top: 16px; right: 16px; min-width: 130px; text-align: right; }
+/* Distance · score · money: one row so they can never overlap. */
+#hud-stats {
+  position: absolute; top: 16px; left: 16px; right: 16px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+#hud-stats .hud-box { position: relative; }
+#hud-dist { min-width: 150px; }
+#hud-money { min-width: 130px; text-align: right; }
 #hud-money .hud-value { color: var(--yellow); }
 #hud-money.bump { animation: bump 0.35s ease-out; }
 @keyframes bump { 40% { transform: scale(1.12); } }
-#hud-score { top: 16px; left: 50%; transform: translateX(-50%); text-align: center; min-width: 140px; padding: 6px 16px; }
+#hud-score { text-align: center; min-width: 140px; padding: 6px 16px; }
 #hud-score .hud-value { font-size: 22px; }
 #hud-speed { bottom: 14px; left: 50%; transform: translateX(-50%); text-align: center; min-width: 150px; padding: 6px 16px 10px; }
 #hud-speed .hud-value { font-size: 32px; }
@@ -174,6 +180,24 @@ input[type=range] { width: 170px; accent-color: var(--yellow); }
 #touch .tbtn.on { background: rgba(255,210,60,0.45); }
 
 @media (max-width: 640px) {
+  /* Phones: one glass panel with three equal columns instead of three cards. */
+  #hud-stats {
+    top: max(10px, env(safe-area-inset-top)); left: 10px; right: 10px; gap: 0;
+    background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--shadow);
+  }
+  #hud-stats .hud-box {
+    flex: 1 1 0; min-width: 0; padding: 8px 10px; text-align: center;
+    background: none; border: 0; border-radius: 0; box-shadow: none;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+  #hud-stats .hud-box + .hud-box { border-left: 1px solid var(--line); }
+  #hud-stats .hud-value { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #hud-score .hud-value { font-size: 20px; }
+  .hud-label { font-size: 12px; }
+  #hud-tier { top: 84px; }
+  .pause-btn { top: 82px; }
+  .toasts { top: 120px; }
   .hud-value { font-size: 20px; }
   #hud-speed .hud-value { font-size: 28px; }
   .btn { min-width: 200px; font-size: 17px; }
